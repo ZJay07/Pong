@@ -7,6 +7,7 @@ WIDTH, HEIGHT = 1000, 600
 wn = pygame.display.set_mode(WIDTH, HEIGHT)
 pygame.display.set_caption("Pong")
 run = True
+player_1 = player_2 = 0 
 direction = [0,1]
 angle = [0, 1, 2]
 
@@ -64,6 +65,7 @@ while run:
         ball_vel_y *= -1
     # x wins
     if ball_x >= WIDTH - radius:
+        player_1 += 1 
         ball_x, ball_y = WIDTH/2 - radius, HEIGHT/2 - radius
         dir = random.choice(direction)
         ang = random.choice(angle)
@@ -83,6 +85,7 @@ while run:
                ball_vel_y, ball_vel_x = 0.7, 1.4
     # y wins
     if ball_x <= 0 - radius:
+        player_2 += 1
         ball_x, ball_y = WIDTH/2 - radius, HEIGHT/2 - radius
         dir = random.choice(direction)
         ang = random.choice(angle)
@@ -160,6 +163,17 @@ while run:
     if right_paddle_y <= 0:
         right_paddle_y = 0
     
+    # Score Board and skill tracking
+    font = pygame.font.SysFont('callibri', 32)
+    score_1 = font.render("player_1:" + str(player_1), True, WHITE)
+    wn.blit(score_1, (25,25))
+    score_2 = font.render("player_2:" + str(player_2), True, WHITE)
+    wn.blit(score_2, (825,25))
+    skill_left_1 = font.render("skills left:" + str(left_skill_remaining), True, WHITE)
+    wn.blit(skill_left_1, (25,65))
+    skill_left_2 = font.render("skills left:" + str(right_skill_remaining), True, WHITE)
+    wn.blit(skill_left_1, (825,65))
+
     # OBJECTS
     pygame.draw.circle(wn, BLUE, (ball_x, ball_y), radius)
     pygame.draw.rect(wn, RED, pygame.Rect(left_paddle_x, left_paddle_y, paddle_width, paddle_height))
@@ -169,5 +183,17 @@ while run:
         pygame.draw.circle(wn, WHITE, (left_paddle_x + 10, left_paddle_y +10), 4)
     if right_skill == 1:
         pygame.draw.circle(wn, WHITE, (right_paddle_x + 10, right_paddle_y +10), 4)
+    
+    # end screen
+    winning_font = pygame.font.SysFont('callibri', 100)
+    if player_1 >= 3:
+        wn.fill(BLACK)
+        endscreen = winning_font.render("Player_1 won!", True, WHITE)
+        wn.blit(endscreen, (200,250))
+
+    if player_2 >= 3:
+        wn.fill(BLACK)
+        endscreen = winning_font.render("Player_2 won!", True, WHITE)
+        wn.blit(endscreen, (200,250))
     pygame.display.update()
         
